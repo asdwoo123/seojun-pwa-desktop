@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import { Typography, Form, Icon, Input, Button, Checkbox, message } from 'antd';
 import axios from 'axios';
+import { EmailOutlined } from '@material-ui/icons';
 
 
 const { Text } = Typography;
@@ -18,14 +19,12 @@ class SignUpScreen extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 if (values.remember) {
-                    console.log('Received values of form: ', values);
-                    axios.post('http://192.168.0.22:8000/auth/join', values)
+                    axios.post('http://192.168.0.22/api/auth/join', values)
                         .then(res => {
-                           if (res.status === 201) {
+                           if (res.data.success) {
                                push('/login');
                            } else {
-                               message.error(res.data);
-                               console.log(res);
+                               message.error(res.data.message);
                            }
                         });
                 } else {
@@ -60,9 +59,10 @@ class SignUpScreen extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const { push } = this.props.history;
+        const { join } = this.props.locale;
         return (
             <Fragment>
-                <Text style={{ fontSize: 17, marginBottom: 25 }} type="secondary">Please complete to create your account</Text>
+                <Text style={{ fontSize: 17, marginBottom: 25 }} type="secondary">{join[0]}</Text>
                 <Form onSubmit={this.handleSubmit}>
                     <Item>
                         {getFieldDecorator('email', {
@@ -70,7 +70,7 @@ class SignUpScreen extends Component {
                                 type: 'email', message: 'The input is not valid email'
                             }]
                         })(
-                            <Input style={{ width: 350 }} prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Email"/>
+                            <Input style={{ width: 350 }} prefix={<EmailOutlined style={{ color: 'rgba(0,0,0,.25)', fontSize: 14 }} />} placeholder="Email"/>
                         )}
                     </Item>
                     <Item>
@@ -108,13 +108,13 @@ class SignUpScreen extends Component {
                                 valuePropName: 'checked',
                                 initialValue: false
                             })(
-                                <Checkbox>I agree with terms and conditions</Checkbox>
+                                <Checkbox>{join[1]}</Checkbox>
                             )
                         }
                     </Item>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <Button style={{ width: 170 }} type="primary" htmlType="submit">Sign up</Button>
-                        <Button style={{ width: 170 }} onClick={() => push('/login')}>Login</Button>
+                        <Button style={{ width: 170 }} type="primary" htmlType="submit">{join[2]}</Button>
+                        <Button style={{ width: 170 }} onClick={() => push('/login')}>{join[3]}</Button>
                     </div>
                 </Form>
             </Fragment>

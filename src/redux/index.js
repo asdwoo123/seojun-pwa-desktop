@@ -1,17 +1,16 @@
-import { combineReducers, createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
-import socketReducer from './socketReducer';
-import mainReducer from './mainReducer';
-import cctvReducer from './cctvReducer';
+import socket from './socketReducer';
+import locale from './localeReducer';
 
-const rootReducer = combineReducers({
-    opc: socketReducer,
-    main: mainReducer,
-    cctv: cctvReducer
+
+const reducer = combineReducers({
+    socket,
+    locale
 });
 
 export default createStore(
-    rootReducer,
+    reducer,
     applyMiddleware(thunk)
 );
 
