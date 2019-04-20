@@ -1,18 +1,24 @@
 import React from 'react';
 import CctvItem from "./CctvItem";
+import { connect } from 'react-redux';
 
 
 const CctvScreen = (props) => {
-    const { windowWidth } = props;
+    const { windowWidth, rsps, ip } = props;
     return (
-        <div style={{ width: (windowWidth >= 720) ? 1400 : '100%' }}>
+        <div style={{ width: (windowWidth >= 720) ? 1400 : '100%', height: "100%" }}>
             {
-                [1, 2, 3, 4, 5].map((item, index) => (
-                    <CctvItem key={index} />
+                rsps.map((item, index) => (
+                    <CctvItem key={index} port={item.port} ip={ip} />
                 ))
             }
         </div>
     )
 };
 
-export default CctvScreen;
+export default connect(
+    (state) => ({
+        rsps: state.socket.rsps,
+        ip: state.socket.ip
+    })
+)(CctvScreen);

@@ -1,10 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import { Table, Card } from 'antd';
+import { Table, Card, Collapse } from 'antd';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import queryString from "query-string";
 import axios from "axios";
 
+
+const Panel = Collapse.Panel;
 
 const renderFun = (text, record, index) => {
     const commons = {
@@ -33,42 +35,50 @@ class DashScreen extends Component {
         plcdatas: []
     };
 
-    async componentDidMount() {
+    async componentWillMount() {
         this.querying = this.props.location.search;
         const projectId = queryString.parse(this.querying).project;
-        const res = await axios.get(`http://192.168.0.22:8000/api/project/projectOne/
+        console.log(projectId);
+        const res = await axios.get(`http://www.seojuneng.co.kr/api/project/projectOne/
        ${projectId}`);
-        const { rsps } = res.data;
+        console.log(res);
+        const { rsps, connectIp } = res.data;
         rsps.forEach((rsp, index) => {
             const plcdata = {};
             plcdata.name = rsp.name;
             plcdata.key = (index + 1).toString();
-            const socket = io(`http://${rsp.ip}`, {
+            this.updateData(plcdata, index);
+            const socket = io(`http://${connectIp}:${rsp.port}`, {
                 path: '/socket.io'
             });
             plcdata.socket = socket;
 
             socket.on('Total', (data) => {
+                console.log(data.value);
                plcdata.total = data.value;
                 this.updateData(plcdata, index);
             });
 
             socket.on('Cycle time', (data) => {
+                console.log(data.value);
                plcdata.cycleTime = data.value;
                 this.updateData(plcdata, index);
             });
 
             socket.on('Part number', (data) => {
+                console.log(data.value);
                 plcdata.partnumber = data.value;
                 this.updateData(plcdata, index);
             });
 
             socket.on('OK', (data) => {
+                console.log(data.value);
                 plcdata.ok = data.value;
                 this.updateData(plcdata, index);
             });
 
             socket.on('NOK', (data) => {
+                console.log(data.value);
                 plcdata.nok = data.value;
                 this.updateData(plcdata, index);
             });
@@ -92,47 +102,6 @@ class DashScreen extends Component {
     render() {
         const { dashboard } = this.props.locale;
         const { windowWidth } = this.props;
-        const dataSource = [{
-            key: '1',
-            name: 'Hyebin',
-            partnumber: 'test1',
-            cycleTime: 10,
-            total: 25,
-            ok: 5,
-            nok: 10
-        },{
-            key: '2',
-            name: 'Yeonwoo',
-            partnumber: 'test2',
-            cycleTime: 10,
-            total: 30,
-            ok: 25,
-            nok: 5
-        },{
-            key: '3',
-            name: 'Jane',
-            partnumber: 'test3',
-            cycleTime: 10,
-            total: 50,
-            ok: 30,
-            nok: 20
-        },{
-            key: '4',
-            name: 'Nayun',
-            partnumber: 'test4',
-            cycleTime: 10,
-            total: 40,
-            ok: 35,
-            nok: 5
-        },{
-            key: '5',
-            name: 'Taeha',
-            partnumber: 'test5',
-            cycleTime: 10,
-            total: 42,
-            ok: 40,
-            nok: 2
-        }];
 
         const columns = [{
             title: dashboard[0],
@@ -168,15 +137,44 @@ class DashScreen extends Component {
         const pStyle = { paddingLeft: 20, paddingRight: 20, display: 'flex',
             justifyContent: 'space-between' };
         return (
-            <div>
+            <div style={{ height: '100%' }}>
                 {
                     (windowWidth >= 720) ? <Table style={{ width: 700 }} dataSource={this.state.plcdatas} columns={columns} /> :
                         <Fragment>
-                            <Card style={{ borderBottom: '1px solid #333' }} title={dashboard[1]}>
+                            <Collapse style={{ marginTop: 20 }}>
+                                {
+                                    this.state.plcdatas.map((item, index) => (
+                                        (item.partnumber) ?
+                                        <Panel key={index} header={item.name} extra={<span>connect</span>}>
+                                            <p style={pStyle}>
+                                                <span>{dashboard[1]}</span>
+                                                <span>{item.partnumber}</span>
+                                            </p>
+                                            <p style={pStyle}>
+                                                <span>{dashboard[2]}</span>
+                                                <span>{item.cycleTime}</span>
+                                            </p>
+                                            <p style={pStyle}>
+                                                <span>{dashboard[3]}</span>
+                                                <span>{item.total}</span>
+                                            </p>
+                                            <p style={pStyle}>
+                                                <span>{dashboard[4]}</span>
+                                                <span>{item.ok}</span>
+                                            </p>
+                                            <p style={pStyle}>
+                                                <span>{dashboard[5]}</span>
+                                                <span>{item.partnumber}</span>
+                                            </p>
+                                        </Panel> : <Panel key={index} header={item.name} disabled extra={<span>not connect</span>} />
+                                    ))
+                                }
+                            </Collapse>
+                            {/*<Card style={{ borderBottom: '1px solid #333' }} title={dashboard[1]}>
                                 {
                                     this.state.plcdatas.map((item, index) => (
                                         <p style={pStyle} key={index}><span> {item.name}</span>
-                                            <span>{item.total}</span>   </p>
+                                            <span>{item.partnumber}</span>   </p>
                                     ))
                                 }
                             </Card>
@@ -184,7 +182,7 @@ class DashScreen extends Component {
                                 {
                                     this.state.plcdatas.map((item, index) => (
                                         <p style={pStyle} key={index}><span> {item.name}</span>
-                                            <span>{item.total}</span>   </p>
+                                            <span>{item.cycleTime}</span>   </p>
                                     ))
                                 }
                             </Card>
@@ -203,7 +201,7 @@ class DashScreen extends Component {
                                     this.state.plcdatas.map((item, index) => (
                                         <p style={pStyle} key={index}>
                                             <span>{item.name}</span>
-                                            <span>{item.nok}</span>
+                                            <span>{item.ok}</span>
                                         </p>
                                     ))
                                 }
@@ -217,7 +215,7 @@ class DashScreen extends Component {
                                             </p>
                                     ))
                                 }
-                            </Card>
+                            </Card>*/}
                         </Fragment>
                 }
             </div>

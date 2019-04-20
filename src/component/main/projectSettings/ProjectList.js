@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as SocketActions from '../../../redux/socketReducer';
-import { List } from 'antd-mobile';
+import { List, Toast } from 'antd-mobile';
 import LongPress from 'react-long';
 
 
@@ -22,7 +22,9 @@ class ProjectList extends Component {
     };
 
     loadData = async () => {
-        const res = await axios.get('http://192.168.0.22:8000/api/project/projectAll');
+        const res = await axios.get('http://www.seojuneng.co.kr/api/project/projectAll', {
+            withCredentials: true
+        });
         const data = res.data;
         const kd = [];
         data.forEach((item, index) => {
@@ -96,8 +98,15 @@ class ProjectList extends Component {
             }
 
             console.log('Received values of form: ', values);
-            axios.post(`http://192.168.0.22:8000/api/project/projectOne/${this.state.deid}`, values)
-                .then(() => this.loadData());
+            axios.post(`http://www.seojuneng.co.kr/api/project/projectOne/${this.state.deid}`, values)
+                .then((res) => {
+                    this.loadData();
+                    if (res.data.success) {
+                        Toast.info("삭제되었습니다.",1);
+                    } else {
+                        Toast.info("비밀번호가 일치하지 않습니다.",1);
+                    }
+                });
             form.resetFields();
             this.setState({ visible2: false });
         });
@@ -159,13 +168,8 @@ class ProjectList extends Component {
             if (index % 2 === 0) {
                 return (
                     <span style={{ backgroundColor: '#232d5b', color: '#7c85a1',
-                    width: '100%', height: '100%', padding: 16, display: "block" }}>
-                        <a style={{ color: 'rgb(221, 146, 8)' }} onClick={(e) => {
-                            e.preventDefault();
-                            this.showModal();
-                        }}>{project[5]}</a>
-                    <Divider type="vertical" />
-                <a style={{ color: 'rgb(221, 146, 8)' }} onClick={(e) => {
+                        width: '100%', height: '100%', padding: 16, display: "block" }}>
+                   <a style={{ color: 'rgb(221, 146, 8)' }} onClick={(e) => {
                     e.preventDefault();
                     console.log(record);
                     this.setState({

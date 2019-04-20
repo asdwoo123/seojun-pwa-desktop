@@ -17,9 +17,9 @@ class RegisterScreen extends Component {
                values.equipments = values.equipments.filter((n) => {
                   return n.name !== undefined;
                });
-               await axios.post('http://192.168.0.22:8000/api/project/projectOne', values);
+               await axios.post('http://www.seojuneng.co.kr/api/project/projectOne', values);
                this.props.form.resetFields();
-               const res = await axios.get('http://192.168.0.22:8000/api/project/projectAll');
+               const res = await axios.get('http://www.seojuneng.co.kr/api/project/projectAll');
                const data = res.data;
                const kd = [];
                data.forEach((item, index) => {
@@ -45,9 +45,9 @@ class RegisterScreen extends Component {
                 values.equipments = values.equipments.filter((n) => {
                     return n.name !== undefined;
                 });
-                await axios.post('http://192.168.0.22:8000/api/project/projectOne', values);
+                await axios.post('http://www.seojuneng.co.kr/api/project/projectOne', values);
                 this.props.form.resetFields();
-                const res = await axios.get('http://192.168.0.22:8000/api/project/projectAll');
+                const res = await axios.get('http://www.seojuneng.co.kr/api/project/projectAll');
                 const data = res.data;
                 const kd = [];
                 data.forEach((item, index) => {
@@ -79,7 +79,12 @@ class RegisterScreen extends Component {
                         <div>
                             <Form.Item label={project[8]}>
                                 {getFieldDecorator('name')(
-                                    <Input style={{ width: 370 }} />
+                                    <Input placeholder={project[26]} />
+                                )}
+                            </Form.Item>
+                            <Form.Item>
+                                {getFieldDecorator('ip')(
+                                    <Input placeholder={project[12]} />
                                 )}
                             </Form.Item>
                         </div>
@@ -98,8 +103,8 @@ class RegisterScreen extends Component {
                                             />)}
                                         </Form.Item>
                                         <Form.Item>
-                                            {getFieldDecorator(`equipments[${index}].ip`)(<Input
-                                                placeholder={project[12]}
+                                            {getFieldDecorator(`equipments[${index}].port`)(<Input
+                                                placeholder={project[27]}
                                             />)}
                                         </Form.Item>
                                     </div>
@@ -113,12 +118,17 @@ class RegisterScreen extends Component {
             )
         } else {
             return (
-                <Form layout="inline" onSubmit={this.handleSubmit2}>
+                <Form style={{ position: "relative", top: 45 }} layout="inline" onSubmit={this.handleSubmit2}>
                     <div style={{ width: '95%', margin: 'auto' }}>
                         <p style={{ marginBottom: 0, fontSize: 12 }}>{project[8]}</p>
-                        <Form.Item style={{ width: '100%' }} >
+                        <Form.Item style={{ width: 'calc(50% - 6px)', marginRight: 12 }} >
                             {getFieldDecorator('name')(
-                                <Input />
+                                <Input placeholder={project[26]} style={{ width: '100%' }} />
+                            )}
+                        </Form.Item>
+                        <Form.Item style={{ width: 'calc(50% - 6px)', marginRight: 0 }} >
+                            {getFieldDecorator('ip')(
+                                <Input placeholder={project[12]} style={{ width: '100%' }} />
                             )}
                         </Form.Item>
                     </div>
@@ -134,14 +144,14 @@ class RegisterScreen extends Component {
                                 <div key={index} style={{ width: '95%', margin: 'auto' }}>
                                     <p style={{ marginBottom: 0, fontSize: 12 }}>{`${project[10]} ${item}`}</p>
                                     <div style={{ display: 'flex' }}>
-                                    <Form.Item style={{ width: '50%' }} >
+                                    <Form.Item style={{ width: 'calc(50% - 6px)', marginRight: 12 }} >
                                         {getFieldDecorator(`equipments[${index}].name`)(<Input
                                             placeholder={project[11]}
                                         />)}
                                     </Form.Item>
-                                    <Form.Item style={{ width: '50%', marginRight: 0 }}>
-                                        {getFieldDecorator(`equipments[${index}].ip`)(<Input
-                                            placeholder={project[12]}
+                                    <Form.Item style={{ width: 'calc(50% - 6px)', marginRight: 0 }}>
+                                        {getFieldDecorator(`equipments[${index}].port`)(<Input
+                                            placeholder={project[27]}
                                         />)}
                                     </Form.Item>
                                     </div>

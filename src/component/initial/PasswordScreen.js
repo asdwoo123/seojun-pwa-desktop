@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import { Steps, Button } from 'antd';
+import { Steps } from 'antd';
 import StepOneScreen from "./password/StepOneScreen";
 import StepTwoScreen from "./password/StepTwoScreen";
 import StepThreeScreen from "./password/StepThreeScreen";

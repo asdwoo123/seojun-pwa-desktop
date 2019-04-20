@@ -7,6 +7,7 @@ const connectIP = 'connectIP';
 const saveIPList = 'saveIPList';
 const projectList = 'projectList';
 const rsps = 'rsps';
+export const setConnectIp = createAction(connectIP);
 export const setProjectList = createAction(projectList);
 export const setRsps = createAction(rsps);
 
@@ -14,7 +15,7 @@ export const setRsps = createAction(rsps);
 
 
 const initialState = {
-    connectIP: null,
+    ip: '',
     saveIPList: [{ip: '192.168.0.34', name: 'momoland'}, {ip: '192.168.0.34', name: 'momoland'}],
     equipment: new Map(),
     projects: [],
@@ -26,7 +27,7 @@ export default handleActions({
         const data = action.payload;
         return {
             ...state,
-            connectIP: data
+           ip: data
         }
     },
     [saveIPList]: (state, action) => {

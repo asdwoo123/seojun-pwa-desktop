@@ -16,7 +16,6 @@ import logo from './logo.svg';
 import { Tabs, NavBar } from 'antd-mobile';
 
 
-
 class MainScreen extends Component {
     state = {
         collapsed: false,
@@ -27,18 +26,20 @@ class MainScreen extends Component {
     async componentWillMount() {
        this.querying = this.props.location.search;
        const projectId = queryString.parse(this.querying).project;
-       const res = await axios.get(`http://192.168.0.22:8000/api/project/projectOne/
+       const res = await axios.get(`http://www.seojuneng.co.kr/api/project/projectOne/
        ${projectId}`);
-       const { name, rsps } = res.data;
+       console.log(res.data);
+       const { name, rsps, connectIp } = res.data;
        this.setState({
            name,
            rsps
        });
        this.props.socketActions.setRsps(this.state.rsps);
+       this.props.socketActions.setConnectIp(connectIp);
     }
 
     handleLogout = () => {
-        axios.get('http://192.168.0.22:8000/auth/logout')
+        axios.get('http://www.seojuneng.co.kr/api/auth/logout')
             .then(res => {
                if (res.data.success === true) {
                    this.props.history.push("/login");
@@ -64,7 +65,7 @@ class MainScreen extends Component {
                         >
                             <p style={{ height: 64, lineHeight: 4, color: '#7c85a1', paddingLeft: 16,
                                 fontSize: 15, cursor: "pointer", marginBottom: 0, backgroundColor: 'white',
-                                display: 'flex', alignItems: 'center', opacity: 0.85 }} onClick={() => this.props.history.push("/project")}>
+                                display: 'flex', alignItems: 'center' }} onClick={() => this.props.history.push("/project")}>
                                 <img width={70} src={logo} />
                                 <span style={{ display: 'inline-block', marginLeft: 15, fontSize: 18 }}>
                             SEOJUN ENG</span></p>
@@ -100,7 +101,7 @@ class MainScreen extends Component {
                 { title: main[4] }
             ];
             return (
-              <div>
+              <div style={{ height: "100%" }}>
                   <NavBar mode="dark"
                           leftContent={[
                               <span onClick={() => this.props.history.push("/project")}>{main[1]}</span>
@@ -111,9 +112,9 @@ class MainScreen extends Component {
                   >
                       {this.state.name}
                   </NavBar>
-                  <Tabs tabs={tabs} initialPage={0} animated={false} useOnPan={false}>
+                  <Tabs tabs={tabs} initialPage={0} animated={true} useOnPan={false}>
                       <DashScreen {...this.props} />
-                      <CctvScreen {...this.props}/>
+                      <CctvScreen {...this.props} />
                   </Tabs>
               </div>
             );

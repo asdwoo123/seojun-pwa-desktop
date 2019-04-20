@@ -8,7 +8,6 @@ import { Provider } from 'react-redux';
 import 'antd/dist/antd.css';
 import 'antd-mobile/dist/antd-mobile.css';
 
-
 ReactDOM.render(<Provider store={store}><App /></Provider>,
     document.getElementById('root'));
 

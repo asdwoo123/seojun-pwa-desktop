@@ -17,15 +17,15 @@ async function loadData(props) {
     try {
         const pathname = props.location.pathname;
         if (pathname === '/') {
-            const res = await axios.get('http://192.168.0.22:8000/api/auth/isLoggedIn');
-            const { success } = res.data;
+            const res = await axios.get('http://www.seojuneng.co.kr/api/auth/isLoggedIn');
+            const { success, locale } = res.data;
             if (success) {
+                props.localeActions.setContry(locale);
                 props.history.push('/project');
             } else {
                 props.history.push('/login');
             }
         }
-
     } catch (e) {
         props.history.push('/login')
     }
@@ -38,13 +38,16 @@ class Root extends Component {
         this.props.localeActions.setContry(value);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         loadData(this.props);
     }
 
     render() {
+        const { windowWidth } = this.props;
         return (
             <Fragment>
+                {
+                    (windowWidth >= 720) ?
                     <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 10 }}>
                     <Select defaultValue="en" style={{ width: 120 }}
                     onChange={this.handleOnChange.bind(this)} >
@@ -52,7 +55,8 @@ class Root extends Component {
                     <Option value="ko">한국어</Option>
                     <Option value="de">Deutsch</Option>
                     </Select>
-                    </div>
+                    </div> : null
+                }
                 <Route path="/login" render={() => <InitialScreen {...this.props}/>} />
                 <Route path="/join" render={() => <InitialScreen {...this.props}/>} />
                 <Route path="/password" render={() => <InitialScreen {...this.props}/>} />

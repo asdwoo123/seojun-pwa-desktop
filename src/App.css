@@ -67,6 +67,19 @@ td {
   .ant-card-bordered {
     border-bottom: 1px solid #e8e8e8 !important;
   }
+
+  .ant-form-horizontal {
+    width: 100%;
+  }
+
+  .ant-form-horizontal > .ant-form-item {
+    width: 90%;
+    margin: 0 auto 24px;
+  }
+
+  .am-tabs {
+    height: calc(100% - 45px) !important;
+  }
 }
 
 @keyframes App-logo-spin {
@@ -187,5 +200,12 @@ td {
 @media screen and (max-width: 719px) {
   .ant-form-item-label {
     padding-bottom: 3px !important;
+  }
+  .formMargin {
+    margin: 0 16px;
+  }
+  .linkMargin {
+    margin-right: 16px;
+    margin-left: 16px;
   }
 }

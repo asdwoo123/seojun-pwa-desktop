@@ -18,7 +18,7 @@ class LoginScreen extends Component {
             if (err) {
                 return;
             }
-            const res = await axios.post("http://192.168.0.22:8000/api/auth/findUsername", values);
+            const res = await axios.post("http://www.seojuneng.co.kr/api/auth/findUsername", values);
             if (res.data.success) {
                 form.resetFields();
                 this.setState({ visible: false });
@@ -46,7 +46,8 @@ class LoginScreen extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                axios.post('http://192.168.0.22:8000/api/auth/login', values)
+                axios.defaults.withCredentials = true;
+                axios.post('http://www.seojuneng.co.kr/api/auth/login', values)
                     .then(res => {
                         console.log(res);
                         if (res.data.success) {
@@ -63,6 +64,8 @@ class LoginScreen extends Component {
         const { getFieldDecorator } = this.props.form;
         const { push } = this.props.history;
         const { login } = this.props.locale;
+        const { windowWidth } = this.props;
+        const buttonWidth = { width: (windowWidth >= 720) ? 170 : "calc(50% - 10px)" };
         return (
             <Fragment>
                 <Text style={{ fontSize: 17, marginBottom: 25 }} type="secondary">{login[0]}</Text>
@@ -71,7 +74,7 @@ class LoginScreen extends Component {
                         {getFieldDecorator('username', {
                             rules: [{ required: true, message: 'Please input your username' }]
                         })(
-                            <Input style={{ width: 350 }} prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }}/>} placeholder="Username"/>
+                            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }}/>} placeholder="Username"/>
                         )}
                     </Item>
                     <Item>
@@ -79,7 +82,7 @@ class LoginScreen extends Component {
                             getFieldDecorator('password', {
                                 rules: [{ required: true, message: 'Please input your Password' }]
                             })(
-                                <Input style={{ width: 350 }} prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+                                <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
                             )
                         }
                     </Item>
@@ -93,11 +96,11 @@ class LoginScreen extends Component {
                             )
                         }
                     </Item>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <Button style={{ width: 170 }} type="primary" htmlType="submit">{login[2]}</Button>
-                    <Button style={{ width: 170 }} onClick={() => push('/join')}>{login[3]}</Button>
+                    <div className="formMargin" style={{ display: "flex", justifyContent: "space-between" }}>
+                    <Button style={buttonWidth} type="primary" htmlType="submit">{login[2]}</Button>
+                    <Button style={buttonWidth} onClick={() => push('/join')}>{login[3]}</Button>
                     </div>
-                    <p style={{ marginTop: 10, display: "flex", justifyContent: 'space-between' }}>
+                    <p className="linkMargin" style={{ marginTop: 10, display: "flex", justifyContent: 'space-between' }}>
                         <a onClick={event => {
                             event.preventDefault();
                             this.showModal();
